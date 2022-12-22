@@ -10,12 +10,12 @@ def authenticate(username, password):
     else:
         return False
 
-def createUser(username, password):
-    cursor.execute("INSERT INTO accounts VALUES (%s, %s)", (username, password))
+def createUser(username, password, DOB):
+    cursor.execute("INSERT INTO accounts VALUES (%s, %s, %s)", (username, password, DOB))
     connect.commit()
 
 def showUsers():
-    cursor.execute("SELECT * FROM accounts")
+    cursor.execute("SELECT * FROM accounts;")
     data = cursor.fetchall()
     for row in data:
         print(row)
@@ -24,10 +24,13 @@ def deleteUser(username):
     cursor.execute("DELETE FROM accounts WHERE username = %s", (username,))
     connect.commit()
 
+def forgotPassword(username, password, DOB):
+    deleteUser(username)
+    createUser(username, password, DOB)
 
 a = 0
 while a == 0:
-    choice = input("1. Authenticate account \n 2. Create account \n 3. Show accounts \n 4. Delete account \n Choose an option: ")
+    choice = input("1. Authenticate account \n 2. Create account \n 3. Show accounts \n 4. Delete account \n 5. Forgot Password \n Choose an option: ")
     if choice == "1":
         u_name = input("Enter your username: ")
         pwd = input("Enter your password: ")
@@ -40,8 +43,9 @@ while a == 0:
     elif choice == "2":
         u_name = input("Enter your username: ")
         pwd = input("Enter your password: ")
+        dob = input("Enter your DOB: ")
         try:
-            createUser(u_name, pwd)
+            createUser(u_name, pwd, dob)
             print("Account created successfully!")
         except:
             print("Username already exists. Please try again!")
@@ -60,6 +64,15 @@ while a == 0:
         except:
             print("Account does not exist. Please try again!")
 
+    elif choice == "5":
+        u_name = input("Enter your username: ")
+        pwd = input("Enter your new Password: ")
+        DOB = input("Enter your DOB: ")
+        try:
+            forgotPassword(u_name, pwd, DOB)
+            print("Password changed successfully!")
+        except:
+            print("Account does not exist. Please try again!")
+
     else:
         print("Invalid choice. Please try again!")
-
